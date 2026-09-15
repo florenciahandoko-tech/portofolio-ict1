@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Floren • Project Creator & Digital Maker 🎨✨</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Font: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            pastel: {
+              bg: '#FAF6F0',          /* Coklat sangat muda / Oat Milk Cream */
+              card: '#FFFDF9',        /* Soft Warm White */
+              border: '#E8DEC9',      /* Soft Creamy Brown Border */
+              brown: '#855838',       /* Soft Warm Brown Text/Accents */
+              brownDark: '#533520',   /* Darker Warm Brown */
+              blue: '#E0F2FE',        /* Soft Baby Blue */
+              blueAccent: '#38BDF8',  /* Pastel Sky Blue */
+              blueText: '#0284C7',    /* Cute Dark Blue */
+              yellow: '#FEF08A',      /* Cute Soft Butter Yellow */
+              yellowAccent: '#FACC15',/* Bright Pastel Yellow */
+              yellowText: '#854D0E',  /* Warm Brown-Yellow Text */
+              pink: '#FCE7F3',        /* Pastel Soft Pink Accent */
+              green: '#DCFCE7'       /* Pastel Soft Mint Accent */
+            }
+          },
+          boxShadow: {
+            'pastel': '0 8px 30px -4px rgba(133, 88, 56, 0.08), 0 4px 12px -2px rgba(56, 189, 248, 0.12)',
+            'pastel-hover': '0 20px 35px -10px rgba(56, 189, 248, 0.22), 0 8px 15px -4px rgba(250, 204, 21, 0.2)',
+            'cute-glow': '0 0 20px rgba(254, 240, 138, 0.6)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .bg-grid-pattern {
+      background-image: radial-gradient(rgba(133, 88, 56, 0.12) 1.5px, transparent 1.5px);
+      background-size: 22px 22px;
+    }
+    .pastel-glass {
+      background: rgba(255, 253, 249, 0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #FAF6F0;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #E8DEC9;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #38BDF8;
+    }
+  </style>
+</head>
+<body class="bg-pastel-bg text-pastel-brownDark transition-colors duration-300 min-h-screen flex flex-col bg-grid-pattern antialiased selection:bg-pastel-yellow selection:text-pastel-brownDark">
+
+  <!-- Toast Notification System -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 ease-in-out pointer-events-none flex items-center gap-3 px-5 py-3.5 bg-pastel-brownDark text-white rounded-2xl shadow-xl border border-pastel-border">
+    <i id="toast-icon" class="fa-solid fa-sparkles text-pastel-yellow text-lg"></i>
+    <span id="toast-message" class="text-sm font-semibold">Notifikasi berhasil ✨</span>
+  </div>
+
+  <!-- Floating Admin Access Button -->
+  <button id="floating-admin-btn" onclick="openLoginModal()" class="fixed bottom-5 left-5 z-40 w-12 h-12 rounded-2xl bg-white/90 text-pastel-brown hover:bg-pastel-yellow hover:text-pastel-brownDark flex items-center justify-center border border-pastel-border shadow-lg transition-all transform hover:scale-105" title="Kelola Portofolio (Admin)">
+    <i class="fa-solid fa-key text-base"></i>
+  </button>
+
+  <!-- Navigation Bar -->
+  <header class="sticky top-0 z-40 w-full pastel-glass border-b border-pastel-border/80 transition-all duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo / Avatar -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div id="brand-avatar" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-300 via-sky-200 to-amber-200 flex items-center justify-center text-pastel-brownDark font-extrabold text-xl shadow-md group-hover:scale-105 transition-transform duration-200 border border-white">
+          🌸
+        </div>
+        <div class="flex flex-col">
+          <span id="brand-title" class="font-extrabold text-pastel-brownDark leading-none tracking-tight text-base group-hover:text-sky-600 transition-colors">Floren Studio ✨</span>
+          <span id="brand-subtitle" class="text-xs text-pastel-brown/80 font-medium mt-0.5">Project Creator & Designer</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Menu -->
+      <nav class="hidden md:flex items-center gap-1 bg-pastel-border/30 p-1.5 rounded-full border border-pastel-border/60 text-sm font-semibold">
+        <a href="#about" class="px-4 py-1.5 rounded-full text-pastel-brown hover:text-sky-700 hover:bg-white transition-all">Tentang</a>
+        <a href="#projects" class="px-4 py-1.5 rounded-full text-pastel-brown hover:text-sky-700 hover:bg-white transition-all">Project Showcase</a>
+        <a href="#skills" class="px-4 py-1.5 rounded-full text-pastel-brown hover:text-sky-700 hover:bg-white transition-all">Skills</a>
+        <a href="#contact" class="px-4 py-1.5 rounded-full text-pastel-brown hover:text-sky-700 hover:bg-white transition-all">Kontak</a>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2.5">
+        <button onclick="openLoginModal()" aria-label="Admin Panel" class="w-10 h-10 rounded-2xl bg-pastel-yellow/60 hover:bg-pastel-yellow text-pastel-yellowText flex items-center justify-center transition-all border border-pastel-yellowAccent/40 shadow-sm" title="Login Admin">
+          <i class="fa-solid fa-user-gear text-sm"></i>
+        </button>
+
+        <a href="#contact" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-sky-400 hover:bg-sky-500 text-white font-bold text-sm transition-all shadow-md shadow-sky-400/30 active:scale-95 border border-sky-300">
+          <i class="fa-solid fa-heart text-xs"></i>
+          <span id="nav-cta-text">Hubungi Floren</span>
+        </a>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button id="mobile-menu-btn" aria-label="Toggle Mobile Menu" class="md:hidden w-10 h-10 rounded-2xl bg-white text-pastel-brown flex items-center justify-center border border-pastel-border">
+          <i class="fa-solid fa-bars text-lg"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden border-b border-pastel-border bg-pastel-card px-4 pt-2 pb-6 space-y-2">
+      <a href="#about" class="mobile-nav-link block px-4 py-2.5 rounded-2xl font-semibold text-pastel-brown hover:bg-pastel-blue">Tentang</a>
+      <a href="#projects" class="mobile-nav-link block px-4 py-2.5 rounded-2xl font-semibold text-pastel-brown hover:bg-pastel-blue">Project Showcase</a>
+      <a href="#skills" class="mobile-nav-link block px-4 py-2.5 rounded-2xl font-semibold text-pastel-brown hover:bg-pastel-blue">Skills</a>
+      <a href="#contact" class="mobile-nav-link block px-4 py-2.5 rounded-2xl font-semibold text-pastel-brown hover:bg-pastel-blue">Kontak</a>
+      <button onclick="openLoginModal()" class="w-full text-left px-4 py-2.5 rounded-2xl font-semibold text-amber-800 bg-pastel-yellow">⚙️ Backend Admin Panel</button>
+    </div>
+  </header>
+
+  <main class="flex-grow">
+    
+    <!-- Hero Section -->
+    <section id="about" class="relative pt-10 pb-16 md:pt-16 md:pb-24 overflow-hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col items-center text-center max-w-3xl mx-auto space-y-6">
+          
+          <!-- Availability Badge -->
+          <div id="hero-badge" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pastel-yellow border border-pastel-yellowAccent text-pastel-yellowText text-xs sm:text-sm font-bold shadow-sm animate-bounce">
+            <span>✨</span>
+            <span id="hero-badge-text">Tersedia untuk Project Kreatif & Collaboration</span>
+          </div>
+
+          <!-- Headline -->
+          <h1 id="hero-headline" class="text-4xl sm:text-5xl md:text-6xl font-black text-pastel-brownDark tracking-tight leading-tight">
+            Menciptakan Karya Digital <span class="bg-gradient-to-r from-sky-500 via-amber-500 to-amber-700 bg-clip-text text-transparent">Lucu, Estetik & Rapi.</span>
+          </h1>
+
+          <!-- Tagline -->
+          <p id="hero-tagline" class="text-base sm:text-lg md:text-xl text-pastel-brown/90 leading-relaxed font-medium max-w-2xl">
+            Halo! Aku <span id="hero-name-badge" class="font-extrabold text-pastel-brownDark bg-pastel-yellow/50 px-2 py-0.5 rounded-lg border border-pastel-yellowAccent/40">Floren</span> 🎀 — seorang Project Creator & UI Designer. Aku merancang aplikasi web, prototype interaktif, dan produk digital dengan estetika pastel yang hangat & mudah digunakan.
+          </p>
+
+          <!-- CTAs -->
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full sm:w-auto pt-2">
+            <a href="#projects" class="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-sky-400 hover:bg-sky-500 text-white font-bold shadow-lg shadow-sky-300/40 hover:shadow-sky-400/50 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-sm sm:text-base border border-sky-300">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <span>Jelajahi Project Floren</span>
+            </a>
+            <button onclick="copyContactEmail()" class="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-pastel-card hover:bg-white text-pastel-brownDark border border-pastel-border font-bold transition-all flex items-center justify-center gap-2 text-sm sm:text-base shadow-sm">
+              <i class="fa-solid fa-copy text-sky-500"></i>
+              <span>Salin Email Floren</span>
+            </button>
+          </div>
+
+          <!-- Social Links Badge Row -->
+          <div id="hero-socials" class="pt-4 flex flex-wrap items-center justify-center gap-3">
+            <!-- Dynamic Social Links -->
+          </div>
+
+          <!-- Quick Metrics Grid -->
+          <div id="hero-metrics" class="grid grid-cols-2 sm:grid-cols-3 gap-4 w-full pt-8 max-w-2xl border-t border-pastel-border/70 mt-6">
+            <div class="bg-pastel-card/80 p-4 rounded-3xl border border-pastel-border shadow-sm">
+              <span id="metric-projects-count" class="block text-2xl sm:text-3xl font-extrabold text-sky-600">18+</span>
+              <span class="text-xs sm:text-sm text-pastel-brown font-semibold">Project Selesai 🎨</span>
+            </div>
+            <div class="bg-pastel-card/80 p-4 rounded-3xl border border-pastel-border shadow-sm">
+              <span id="metric-exp-years" class="block text-2xl sm:text-3xl font-extrabold text-amber-600">3+ Thn</span>
+              <span class="text-xs sm:text-sm text-pastel-brown font-semibold">Project Creator 💻</span>
+            </div>
+            <div class="col-span-2 sm:col-span-1 bg-pastel-card/80 p-4 rounded-3xl border border-pastel-border shadow-sm">
+              <span id="metric-satisfaction" class="block text-2xl sm:text-3xl font-extrabold text-sky-600">100%</span>
+              <span class="text-xs sm:text-sm text-pastel-brown font-semibold">Cinta & Detail ✨</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-16 bg-pastel-card/90 border-y border-pastel-border transition-colors">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+          <div>
+            <div class="inline-flex items-center gap-2 text-sky-600 font-extrabold text-xs tracking-wider uppercase mb-2 bg-pastel-blue px-3 py-1 rounded-full border border-sky-200">
+              <i class="fa-solid fa-folder-heart"></i> Project Hub
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-black text-pastel-brownDark tracking-tight">
+              Galeri Karya & Project
+            </h2>
+            <p class="text-pastel-brown text-sm sm:text-base mt-1">
+              Setiap project dibuat dengan layout rapi, warna pastel yang hangat, dan kemudahan akses.
+            </p>
+          </div>
+
+          <!-- Search Bar Input -->
+          <div class="relative w-full md:w-80">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-pastel-brown/60 text-sm"></i>
+            <input type="text" id="project-search" placeholder="Cari nama project / tech stack..." 
+              class="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 text-pastel-brownDark font-medium transition-all shadow-inner">
+          </div>
+        </div>
+
+        <!-- Filter Tags Bar -->
+        <div id="filter-container" class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar">
+          <button data-filter="all" class="filter-btn active px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap bg-sky-400 text-white shadow-md border border-sky-300 transition-all">
+            Semua Project ✨
+          </button>
+          <button data-filter="webapp" class="filter-btn px-4 py-2 rounded-2xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-pastel-bg hover:bg-pastel-blue text-pastel-brown border border-pastel-border transition-all">
+            Web App
+          </button>
+          <button data-filter="mobile" class="filter-btn px-4 py-2 rounded-2xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-pastel-bg hover:bg-pastel-blue text-pastel-brown border border-pastel-border transition-all">
+            Mobile App
+          </button>
+          <button data-filter="uiux" class="filter-btn px-4 py-2 rounded-2xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-pastel-bg hover:bg-pastel-blue text-pastel-brown border border-pastel-border transition-all">
+            UI/UX Design Kit
+          </button>
+          <button data-filter="creative" class="filter-btn px-4 py-2 rounded-2xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-pastel-bg hover:bg-pastel-blue text-pastel-brown border border-pastel-border transition-all">
+            Creative & Tools
+          </button>
+        </div>
+
+        <!-- Projects Cards Grid (Dynamic) -->
+        <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <!-- Dynamically populated from JS -->
+        </div>
+
+        <!-- Empty State Message -->
+        <div id="empty-state" class="hidden text-center py-16">
+          <div class="w-16 h-16 rounded-full bg-pastel-yellow/60 text-amber-700 flex items-center justify-center mx-auto mb-4 text-2xl border border-amber-300">
+            <i class="fa-solid fa-box-open"></i>
+          </div>
+          <h4 class="text-lg font-bold text-pastel-brownDark">Project Tidak Ditemukan ✨</h4>
+          <p class="text-pastel-brown text-sm mt-1">Coba gunakan kata kunci lain atau pilih filter kategori diatas.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Skills & Tech Stack Section -->
+    <section id="skills" class="py-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <div class="inline-flex items-center gap-2 text-sky-600 font-extrabold text-xs tracking-wider uppercase mb-2 bg-pastel-blue px-3.5 py-1 rounded-full border border-sky-200">
+            <i class="fa-solid fa-sparkles"></i> Keahlian & Tech Stack
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-black text-pastel-brownDark tracking-tight">
+            Alat & Framework Pilihan
+          </h2>
+          <p class="text-pastel-brown text-sm sm:text-base mt-2">
+            Teknologi modern dan perkakas desain yang Floren pakai sehari-hari untuk membuat karya digital.
+          </p>
+        </div>
+
+        <!-- Skill Cards Grid -->
+        <div id="skills-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Dynamically Rendered -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="bg-gradient-to-br from-pastel-yellow via-pastel-blue to-amber-100 rounded-3xl p-8 sm:p-12 text-pastel-brownDark border border-pastel-border shadow-xl relative overflow-hidden">
+          
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center relative z-10">
+            
+            <div class="space-y-6">
+              <div class="inline-flex items-center gap-2 text-sky-700 font-extrabold text-xs tracking-wider uppercase bg-white px-3.5 py-1 rounded-full shadow-sm border border-sky-200">
+                <i class="fa-solid fa-heart"></i> Mari Berkenalan
+              </div>
+              <h2 id="contact-heading" class="text-3xl sm:text-4xl font-black text-pastel-brownDark tracking-tight">
+                Punya Ide Project Seru? Yuk Ngobrol Sama Floren! 🎀
+              </h2>
+              <p id="contact-subtext" class="text-pastel-brown text-sm sm:text-base leading-relaxed font-medium">
+                Floren selalu senang mendiskusikan ide-ide kreatif baru, kolaborasi desain, atau pembuatan aplikasi web yang imut & fungsional.
+              </p>
+
+              <div class="space-y-4 pt-2">
+                <div onclick="copyContactEmail()" class="flex items-center gap-4 p-4 rounded-2xl bg-white hover:bg-pastel-blue cursor-pointer transition-colors border border-pastel-border w-full sm:w-max shadow-sm">
+                  <div class="w-10 h-10 rounded-xl bg-sky-200 text-sky-700 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-envelope"></i>
+                  </div>
+                  <div>
+                    <span class="block text-xs font-bold text-pastel-brown/70">Email Floren</span>
+                    <span id="display-email" class="text-sm font-extrabold text-pastel-brownDark">floren.creator@example.com</span>
+                  </div>
+                  <i class="fa-solid fa-copy text-sky-500 ml-2 text-xs"></i>
+                </div>
+
+                <div class="flex items-center gap-4 p-4 rounded-2xl bg-white border border-pastel-border w-full sm:w-max shadow-sm">
+                  <div class="w-10 h-10 rounded-xl bg-amber-200 text-amber-800 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-location-dot"></i>
+                  </div>
+                  <div>
+                    <span class="block text-xs font-bold text-pastel-brown/70">Lokasi Floren</span>
+                    <span id="display-location" class="text-sm font-extrabold text-pastel-brownDark">Indonesia 🌸</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Contact Form -->
+            <form id="contact-form" class="bg-white p-6 sm:p-8 rounded-3xl border border-pastel-border shadow-md space-y-4">
+              <div>
+                <label for="contact-name" class="block text-xs font-bold text-pastel-brown mb-1">Nama Kamu ✨</label>
+                <input type="text" id="contact-name" required placeholder="Siapa nama kamu?" class="w-full px-4 py-3 rounded-2xl bg-pastel-bg border border-pastel-border text-sm text-pastel-brownDark placeholder-pastel-brown/50 focus:outline-none focus:ring-2 focus:ring-sky-400 font-medium transition-all">
+              </div>
+              <div>
+                <label for="contact-email" class="block text-xs font-bold text-pastel-brown mb-1">Email Kamu ✉️</label>
+                <input type="email" id="contact-email" required placeholder="nama@email.com" class="w-full px-4 py-3 rounded-2xl bg-pastel-bg border border-pastel-border text-sm text-pastel-brownDark placeholder-pastel-brown/50 focus:outline-none focus:ring-2 focus:ring-sky-400 font-medium transition-all">
+              </div>
+              <div>
+                <label for="contact-message" class="block text-xs font-bold text-pastel-brown mb-1">Pesan / Rencana Project 💬</label>
+                <textarea id="contact-message" rows="4" required placeholder="Ceritakan ide atau kebutuhan project kamu ke Floren..." class="w-full px-4 py-3 rounded-2xl bg-pastel-bg border border-pastel-border text-sm text-pastel-brownDark placeholder-pastel-brown/50 focus:outline-none focus:ring-2 focus:ring-sky-400 font-medium transition-all resize-none"></textarea>
+              </div>
+              <button type="submit" class="w-full py-3.5 rounded-2xl bg-sky-400 hover:bg-sky-500 text-white font-extrabold text-sm transition-all shadow-md active:scale-98 border border-sky-300">
+                Kirim Pesan 💌
+              </button>
+            </form>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-8 bg-white border-t border-pastel-border transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2 text-pastel-brown text-xs sm:text-sm font-semibold">
+        <span>&copy; <span id="year-span">2026</span> <span id="footer-owner">Floren Studio</span> • Crafted with pastel love & detail ✨</span>
+      </div>
+      <div class="flex items-center gap-4 text-xs font-bold text-pastel-brown">
+        <a href="#about" class="hover:text-sky-600 transition-colors">Tentang</a>
+        <a href="#projects" class="hover:text-sky-600 transition-colors">Showcase</a>
+        <button onclick="openLoginModal()" class="hover:text-sky-600 text-amber-700 font-bold transition-colors">⚙️ Login Admin</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Project Detail Interactive Modal -->
+  <div id="project-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6 overflow-y-auto bg-pastel-brownDark/40 backdrop-blur-sm transition-opacity">
+    <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-pastel-border shadow-2xl relative animate-in fade-in zoom-in duration-200">
+      <button onclick="closeProjectModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-pastel-bg text-pastel-brownDark hover:bg-pastel-yellow flex items-center justify-center z-10 transition-colors border border-pastel-border shadow-sm">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="h-64 sm:h-80 w-full relative bg-pastel-blue overflow-hidden">
+        <img id="modal-img" src="" alt="Project Image" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-pastel-brownDark/80 via-transparent to-transparent"></div>
+        <div class="absolute bottom-6 left-6 right-6">
+          <span id="modal-category" class="text-xs font-extrabold text-amber-900 bg-pastel-yellow px-3 py-1 rounded-full border border-amber-300"></span>
+          <h2 id="modal-title" class="text-2xl sm:text-3xl font-black text-white mt-2"></h2>
+        </div>
+      </div>
+
+      <div class="p-6 sm:p-8 space-y-6">
+        <div>
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-sky-700 mb-2">Ringkasan Project</h3>
+          <p id="modal-desc" class="text-pastel-brown leading-relaxed text-sm sm:text-base font-medium"></p>
+        </div>
+        <div>
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-sky-700 mb-2">Fitur Utama</h3>
+          <ul id="modal-features" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-pastel-brown font-medium"></ul>
+        </div>
+        <div>
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-sky-700 mb-2">Teknologi & Tools</h3>
+          <div id="modal-tech" class="flex flex-wrap gap-2"></div>
+        </div>
+        <div class="pt-4 border-t border-pastel-border flex flex-col sm:flex-row gap-3 justify-end">
+          <button onclick="closeProjectModal()" class="px-5 py-2.5 rounded-2xl border border-pastel-border font-bold text-sm text-pastel-brown hover:bg-pastel-bg transition-colors">
+            Tutup
+          </button>
+          <a id="modal-live-link" href="#" target="_blank" rel="noopener" class="px-6 py-2.5 rounded-2xl bg-sky-400 hover:bg-sky-500 text-white font-extrabold text-sm shadow-md flex items-center justify-center gap-2 border border-sky-300">
+            <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> Buka Live Demo
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Login Modal -->
+  <div id="login-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-pastel-brownDark/50 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 border border-pastel-border shadow-2xl relative">
+      <button onclick="closeLoginModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-pastel-bg hover:bg-pastel-yellow flex items-center justify-center text-pastel-brownDark transition-colors">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="text-center mb-6">
+        <div class="w-14 h-14 rounded-2xl bg-pastel-yellow/80 border border-amber-300 text-amber-800 flex items-center justify-center text-2xl mx-auto mb-3 shadow-sm">
+          🔐
+        </div>
+        <h3 class="text-2xl font-black text-pastel-brownDark">Admin Security Portal</h3>
+        <p class="text-xs text-pastel-brown font-medium mt-1">Masuk untuk mengelola seluruh konten & project Floren</p>
+      </div>
+
+      <form id="admin-login-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-pastel-brown mb-1">Username Admin</label>
+          <div class="relative">
+            <i class="fa-solid fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-pastel-brown/50 text-xs"></i>
+            <input type="text" id="login-username" required placeholder="Masukkan username" class="w-full pl-9 pr-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-sm font-semibold text-pastel-brownDark focus:ring-2 focus:ring-sky-400 focus:outline-none">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-pastel-brown mb-1">Password</label>
+          <div class="relative">
+            <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-pastel-brown/50 text-xs"></i>
+            <input type="password" id="login-password" required placeholder="••••••••" class="w-full pl-9 pr-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-sm font-semibold text-pastel-brownDark focus:ring-2 focus:ring-sky-400 focus:outline-none">
+          </div>
+        </div>
+
+        <div id="login-error-msg" class="hidden text-xs text-rose-600 font-bold bg-rose-50 p-2.5 rounded-xl border border-rose-200 flex items-center gap-2">
+          <i class="fa-solid fa-circle-exclamation"></i> <span>Username atau password tidak valid!</span>
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-2xl bg-sky-400 hover:bg-sky-500 text-white font-extrabold text-sm shadow-md transition-all border border-sky-300 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span>Masuk Admin Panel</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- BACKEND ADMIN PANEL OVERLAY -->
+  <div id="admin-panel" class="fixed inset-0 z-50 hidden bg-pastel-bg flex-col md:flex-row overflow-hidden">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="w-full md:w-64 bg-pastel-card border-b md:border-b-0 md:border-r border-pastel-border p-5 flex flex-col justify-between shrink-0">
+      <div>
+        <div class="flex items-center justify-between gap-3 pb-6 border-b border-pastel-border mb-6">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-pastel-yellow text-amber-800 flex items-center justify-center font-black text-lg border border-amber-300 shadow-sm">
+              ⚙️
+            </div>
+            <div>
+              <span class="font-black text-pastel-brownDark text-base block leading-tight">Admin Backend</span>
+              <span class="text-[11px] font-bold text-sky-600 bg-pastel-blue px-2 py-0.5 rounded-full border border-sky-200">System Control</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar Tabs -->
+        <nav class="space-y-1.5 font-bold text-sm">
+          <button data-admin-tab="dashboard" class="admin-nav-btn active w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all text-pastel-brown hover:bg-pastel-blue">
+            <i class="fa-solid fa-chart-pie w-5 text-sky-600"></i>
+            <span>Dashboard Stats</span>
+          </button>
+          <button data-admin-tab="projects" class="admin-nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all text-pastel-brown hover:bg-pastel-blue">
+            <i class="fa-solid fa-folder-tree w-5 text-amber-600"></i>
+            <span>Kelola Projects</span>
+          </button>
+          <button data-admin-tab="hero" class="admin-nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all text-pastel-brown hover:bg-pastel-blue">
+            <i class="fa-solid fa-sliders w-5 text-rose-500"></i>
+            <span>Hero & Profile</span>
+          </button>
+          <button data-admin-tab="skills" class="admin-nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all text-pastel-brown hover:bg-pastel-blue">
+            <i class="fa-solid fa-sparkles w-5 text-emerald-600"></i>
+            <span>Skills & Stack</span>
+          </button>
+          <button data-admin-tab="security" class="admin-nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all text-pastel-brown hover:bg-pastel-blue">
+            <i class="fa-solid fa-shield-halved w-5 text-amber-700"></i>
+            <span>Keamanan Pass</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Bottom Controls -->
+      <div class="pt-6 border-t border-pastel-border space-y-2 mt-4 md:mt-0">
+        <button onclick="closeAdminPanel()" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-pastel-blue hover:bg-sky-200 text-sky-800 font-extrabold text-xs transition-all border border-sky-300">
+          <i class="fa-solid fa-eye"></i>
+          <span>Lihat Live Website</span>
+        </button>
+        <button onclick="logoutAdmin()" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-extrabold text-xs transition-all border border-rose-200">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span>Keluar (Logout)</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Admin Content Area -->
+    <section class="flex-grow bg-pastel-bg overflow-y-auto p-4 sm:p-8">
+      
+      <!-- TAB 1: DASHBOARD OVERVIEW -->
+      <div id="tab-dashboard" class="admin-tab-content space-y-6">
+        <div class="flex items-center justify-between pb-4 border-b border-pastel-border">
+          <div>
+            <h2 class="text-2xl font-black text-pastel-brownDark">Dashboard Ringkasan Backend ✨</h2>
+            <p class="text-xs text-pastel-brown font-medium">Selamat datang Floren! Kelola seluruh portofolio digital kamu di sini.</p>
+          </div>
+          <span class="text-xs font-bold px-3 py-1.5 rounded-2xl bg-pastel-yellow text-amber-800 border border-amber-300">
+            System Online 🟢
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          <div class="bg-white p-5 rounded-3xl border border-pastel-border shadow-sm">
+            <span class="text-xs font-bold text-pastel-brown">Total Projects</span>
+            <div class="flex items-center justify-between mt-2">
+              <span id="stat-total-projects" class="text-3xl font-black text-sky-600">0</span>
+              <i class="fa-solid fa-folder text-sky-300 text-2xl"></i>
+            </div>
+          </div>
+          <div class="bg-white p-5 rounded-3xl border border-pastel-border shadow-sm">
+            <span class="text-xs font-bold text-pastel-brown">Skill Groups</span>
+            <div class="flex items-center justify-between mt-2">
+              <span id="stat-total-skills" class="text-3xl font-black text-amber-600">0</span>
+              <i class="fa-solid fa-wand-magic-sparkles text-amber-300 text-2xl"></i>
+            </div>
+          </div>
+          <div class="bg-white p-5 rounded-3xl border border-pastel-border shadow-sm">
+            <span class="text-xs font-bold text-pastel-brown">Tahun Pengalaman</span>
+            <div class="flex items-center justify-between mt-2">
+              <span id="stat-exp-years" class="text-3xl font-black text-emerald-600">3+</span>
+              <i class="fa-solid fa-award text-emerald-300 text-2xl"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Action Grid -->
+        <div class="bg-white p-6 rounded-3xl border border-pastel-border shadow-sm space-y-4">
+          <h3 class="text-sm font-extrabold text-pastel-brownDark uppercase tracking-wider">Aksi Cepat Backend</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <button onclick="switchAdminTab('projects'); openProjectEditor()" class="p-4 rounded-2xl bg-pastel-blue hover:bg-sky-200 text-sky-800 font-bold text-xs flex items-center gap-3 border border-sky-300 transition-all text-left">
+              <i class="fa-solid fa-circle-plus text-lg"></i>
+              <div>
+                <span class="block">Tambah Project Baru</span>
+                <span class="text-[10px] font-normal opacity-80">Buat kartu project baru</span>
+              </div>
+            </button>
+            <button onclick="switchAdminTab('hero')" class="p-4 rounded-2xl bg-pastel-yellow hover:bg-amber-200 text-amber-900 font-bold text-xs flex items-center gap-3 border border-amber-300 transition-all text-left">
+              <i class="fa-solid fa-pen-to-square text-lg"></i>
+              <div>
+                <span class="block">Edit Profile & Hero Text</span>
+                <span class="text-[10px] font-normal opacity-80">Ubah ucapan, email, & media sosial</span>
+              </div>
+            </button>
+            <button onclick="switchAdminTab('security')" class="p-4 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-800 font-bold text-xs flex items-center gap-3 border border-rose-200 transition-all text-left">
+              <i class="fa-solid fa-key text-lg"></i>
+              <div>
+                <span class="block">Ganti Credential Admin</span>
+                <span class="text-[10px] font-normal opacity-80">Perbarui username & password</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: PROJECTS MANAGER -->
+      <div id="tab-projects" class="admin-tab-content hidden space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-pastel-border">
+          <div>
+            <h2 class="text-2xl font-black text-pastel-brownDark">Manajemen Project Hub 🎨</h2>
+            <p class="text-xs text-pastel-brown font-medium">Tambah, update, atau hapus karya digital yang muncul di landing page.</p>
+          </div>
+          <button onclick="openProjectEditor()" class="px-5 py-2.5 rounded-2xl bg-sky-400 hover:bg-sky-500 text-white font-extrabold text-xs shadow-md border border-sky-300 flex items-center gap-2">
+            <i class="fa-solid fa-plus"></i>
+            <span>Tambah Project Baru</span>
+          </button>
+        </div>
+
+        <!-- Project Editor Form Modal inside Admin -->
+        <div id="admin-project-editor" class="hidden bg-white p-6 rounded-3xl border border-sky-300 shadow-md space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-pastel-border">
+            <h3 id="editor-project-title" class="font-black text-base text-pastel-brownDark">Form Edit / Tambah Project</h3>
+            <button onclick="closeProjectEditor()" class="text-xs font-bold text-rose-600">Batal ✕</button>
+          </div>
+          
+          <form id="project-form" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <input type="hidden" id="edit-project-id">
+            
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-pastel-brown mb-1">Judul Project 🌸</label>
+              <input type="text" id="p-title" required placeholder="Contoh: Bloom Craft - Habit Tracker" class="w-full px-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-xs font-bold">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-pastel-brown mb-1">Kategori (Filter)</label>
+              <select id="p-category" class="w-full px-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-xs font-bold">
+                <option value="webapp">Web Application (webapp)</option>
+                <option value="mobile">Mobile Application (mobile)</option>
+                <option value="uiux">UI/UX Design Kit (uiux)</option>
+                <option value="creative">Creative & Tools (creative)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-pastel-brown mb-1">Label Nama Kategori Tampilan</label>
+              <input type="text" id="p-category-label" required placeholder="Contoh: Web Application" class="w-full px-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-xs font-bold">
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-pastel-brown mb-1">URL Gambar Cover (Image URL)</label>
+              <input type="url" id="p-image" required placeholder="https://images.unsplash.com/..." class="w-full px-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-xs font-bold">
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-pastel-brown mb-1">Deskripsi Ringkas</label>
+              <textarea id="p-desc" rows="3" required placeholder="Jelaskan fungsi utama project..." class="w-full px-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-xs font-semibold resize-none"></textarea>
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-pastel-brown mb-1">Fitur Utama (Pisahkan dengan Koma)</label>
+              <input type="text" id="p-features" placeholder="Animasi Tanaman, Habit Streak, Dark Mode" class="w-full px-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-xs font-bold">
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-pastel-brown mb-1">Tech Stack (Pisahkan dengan Koma)</label>
+              <input type="text" id="p-tech" placeholder="React.js, Tailwind CSS, Framer Motion" class="w-full px-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-xs font-bold">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-pastel-brown mb-1">Jumlah Star / Like</label>
+              <input type="number" id="p-stars" value="120" class="w-full px-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-xs font-bold">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-pastel-brown mb-1">Link Live Demo / Preview</label>
+              <input type="url" id="p-link" placeholder="https://..." class="w-full px-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-xs font-bold">
+            </div>
+
+            <div class="sm:col-span-2 flex justify-end gap-2 pt-2">
+              <button type="button" onclick="closeProjectEditor()" class="px-5 py-2.5 rounded-2xl bg-pastel-bg text-pastel-brown font-bold text-xs border border-pastel-border">Batal</button>
+              <button type="submit" class="px-6 py-2.5 rounded-2xl bg-sky-400 hover:bg-sky-500 text-white font-extrabold text-xs shadow-md border border-sky-300">Simpan Project ✨</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Table of Projects -->
+        <div class="bg-white rounded-3xl border border-pastel-border overflow-hidden shadow-sm">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-pastel-bg text-pastel-brown text-xs uppercase font-extrabold border-b border-pastel-border">
+                  <th class="p-4">Project</th>
+                  <th class="p-4">Kategori</th>
+                  <th class="p-4">Stars</th>
+                  <th class="p-4 text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admin-projects-table" class="divide-y divide-pastel-border text-xs font-bold text-pastel-brownDark">
+                <!-- Dynamically filled -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: HERO & BIO SETTINGS -->
+      <div id="tab-hero" class="admin-tab-content hidden space-y-6">
+        <div class="pb-4 border-b border-pastel-border">
+          <h2 class="text-2xl font-black text-pastel-brownDark">Pengaturan Hero & Profil 🎀</h2>
+          <p class="text-xs text-pastel-brown font-medium">Ubah headline, deskripsi diri, status ketersediaan, serta email publik menggunakan Rich Text Editor.</p>
+        </div>
+
+        <form id="hero-settings-form" class="bg-white p-6 rounded-3xl border border-pastel-border shadow-sm space-y-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            <div>
+              <label class="block text-xs font-bold text-pastel-brown mb-1">Nama Brand / Judul Nav</label>
+              <input type="text" id="set-brand-title" required class="w-full px-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-xs font-bold focus:ring-2 focus:ring-sky-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-pastel-brown mb-1">Logo Emoji Avatar</label>
+              <input type="text" id="set-brand-avatar" required class="w-full px-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-xs font-bold focus:ring-2 focus:ring-sky-400 focus:outline-none">
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-pastel-brown mb-1">Teks Badge Status Ketersediaan</label>
+              <input type="text" id="set-badge-text" required class="w-full px-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-xs font-bold focus:ring-2 focus:ring-sky-400 focus:outline-none">
+            </div>
+
+            <!-- Rich Text Editor for Headline -->
+            <div class="sm:col-span-2 space-y-2">
+              <div class="flex items-center justify-between">
+                <label class="block text-xs font-bold text-pastel-brown">Judul Utama (Headline)</label>
+                <span class="text-[11px] font-semibold text-sky-600">Rich Text Visual Formatting ✨</span>
+              </div>
+              
+              <!-- Formatting Toolbar -->
+              <div class="flex flex-wrap items-center gap-1.5 p-2 rounded-2xl bg-pastel-bg border border-pastel-border text-xs">
+                <button type="button" onclick="applyRichFormat('headline', 'gradient')" class="px-2.5 py-1 rounded-xl bg-white hover:bg-sky-100 text-sky-700 font-bold border border-pastel-border shadow-sm transition-all" title="Beri warna gradient biru-amber pada teks terpilih">
+                  <i class="fa-solid fa-wand-magic-sparkles mr-1 text-amber-500"></i> Gradient Accent
+                </button>
+                <button type="button" onclick="applyRichFormat('headline', 'bold')" class="px-2.5 py-1 rounded-xl bg-white hover:bg-pastel-yellow text-pastel-brownDark font-bold border border-pastel-border shadow-sm transition-all" title="Bold">
+                  <i class="fa-solid fa-bold"></i>
+                </button>
+                <button type="button" onclick="applyRichFormat('headline', 'italic')" class="px-2.5 py-1 rounded-xl bg-white hover:bg-pastel-yellow text-pastel-brownDark font-italic border border-pastel-border shadow-sm transition-all" title="Italic">
+                  <i class="fa-solid fa-italic"></i>
+                </button>
+                <button type="button" onclick="insertEmoji('headline', '🌸')" class="px-2 py-1 rounded-xl bg-white hover:bg-rose-100 border border-pastel-border shadow-sm">🌸</button>
+                <button type="button" onclick="insertEmoji('headline', '✨')" class="px-2 py-1 rounded-xl bg-white hover:bg-amber-100 border border-pastel-border shadow-sm">✨</button>
+                <button type="button" onclick="applyRichFormat('headline', 'clear')" class="px-2 py-1 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold border border-rose-200 shadow-sm ml-auto text-[11px]">
+                  Bersihkan Format
+                </button>
+              </div>
+
+              <!-- Contenteditable Rich Text Editor Field -->
+              <div id="editor-headline" contenteditable="true" class="w-full min-h-[70px] px-4 py-3 rounded-2xl bg-white border border-pastel-border text-sm font-black text-pastel-brownDark focus:ring-2 focus:ring-sky-400 focus:outline-none shadow-inner leading-snug"></div>
+              <!-- Hidden input storage for form submit -->
+              <input type="hidden" id="set-headline">
+            </div>
+
+            <!-- Rich Text Editor for Bio / Tagline -->
+            <div class="sm:col-span-2 space-y-2">
+              <div class="flex items-center justify-between">
+                <label class="block text-xs font-bold text-pastel-brown">Deskripsi Diri / Bio (Tagline)</label>
+                <span class="text-[11px] font-semibold text-amber-700">Rich Text Visual Formatting 🎀</span>
+              </div>
+
+              <!-- Formatting Toolbar for Tagline -->
+              <div class="flex flex-wrap items-center gap-1.5 p-2 rounded-2xl bg-pastel-bg border border-pastel-border text-xs">
+                <button type="button" onclick="applyRichFormat('tagline', 'badge')" class="px-2.5 py-1 rounded-xl bg-white hover:bg-amber-100 text-amber-900 font-bold border border-pastel-border shadow-sm transition-all" title="Beri badge sorotan warna kuning pastel">
+                  <i class="fa-solid fa-highlighter mr-1 text-amber-500"></i> Badge Highlight
+                </button>
+                <button type="button" onclick="applyRichFormat('tagline', 'bold')" class="px-2.5 py-1 rounded-xl bg-white hover:bg-pastel-yellow text-pastel-brownDark font-bold border border-pastel-border shadow-sm transition-all" title="Bold">
+                  <i class="fa-solid fa-bold"></i>
+                </button>
+                <button type="button" onclick="applyRichFormat('tagline', 'italic')" class="px-2.5 py-1 rounded-xl bg-white hover:bg-pastel-yellow text-pastel-brownDark font-italic border border-pastel-border shadow-sm transition-all" title="Italic">
+                  <i class="fa-solid fa-italic"></i>
+                </button>
+                <button type="button" onclick="insertEmoji('tagline', '🎀')" class="px-2 py-1 rounded-xl bg-white hover:bg-rose-100 border border-pastel-border shadow-sm">🎀</button>
+                <button type="button" onclick="insertEmoji('tagline', '🎨')" class="px-2 py-1 rounded-xl bg-white hover:bg-sky-100 border border-pastel-border shadow-sm">🎨</button>
+                <button type="button" onclick="applyRichFormat('tagline', 'clear')" class="px-2 py-1 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold border border-rose-200 shadow-sm ml-auto text-[11px]">
+                  Bersihkan Format
+                </button>
+              </div>
+
+              <!-- Contenteditable Rich Text Editor Field -->
+              <div id="editor-tagline" contenteditable="true" class="w-full min-h-[90px] px-4 py-3 rounded-2xl bg-white border border-pastel-border text-xs font-medium text-pastel-brownDark focus:ring-2 focus:ring-sky-400 focus:outline-none shadow-inner leading-relaxed"></div>
+              <!-- Hidden input storage for form submit -->
+              <input type="hidden" id="set-tagline">
+            </div>
+
+            <!-- Real-time Live Preview Card -->
+            <div class="sm:col-span-2 p-4 rounded-2xl bg-gradient-to-r from-pastel-bg via-white to-pastel-yellow/30 border border-pastel-border space-y-2">
+              <span class="text-[11px] font-extrabold uppercase tracking-wider text-sky-700 block">👁️ Real-Time Live Preview Tampilan Hero</span>
+              <div id="preview-headline" class="text-xl font-black text-pastel-brownDark leading-tight"></div>
+              <div id="preview-tagline" class="text-xs text-pastel-brown font-medium leading-relaxed"></div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-pastel-brown mb-1">Email Publik Floren</label>
+              <input type="email" id="set-email" required class="w-full px-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-xs font-bold focus:ring-2 focus:ring-sky-400 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-pastel-brown mb-1">Lokasi Floren</label>
+              <input type="text" id="set-location" required class="w-full px-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-xs font-bold focus:ring-2 focus:ring-sky-400 focus:outline-none">
+            </div>
+
+          </div>
+
+          <div class="flex justify-end pt-2 border-t border-pastel-border/60">
+            <button id="btn-save-hero" type="submit" class="px-7 py-3 rounded-2xl bg-sky-400 hover:bg-sky-500 active:scale-95 text-white font-extrabold text-xs shadow-md border border-sky-300 transition-all flex items-center gap-2 cursor-pointer">
+              <i class="fa-solid fa-floppy-disk text-sm"></i>
+              <span id="btn-save-hero-text">Simpan Perubahan Hero & Profile ✨</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- TAB 4: SKILLS & TECH STACK -->
+      <div id="tab-skills" class="admin-tab-content hidden space-y-6">
+        <div class="pb-4 border-b border-pastel-border">
+          <h2 class="text-2xl font-black text-pastel-brownDark">Manajemen Skills ⚡</h2>
+          <p class="text-xs text-pastel-brown font-medium">Atur kelompok keahlian dan level kemahiran yang tampil di website.</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-3xl border border-pastel-border shadow-sm">
+          <p class="text-xs text-pastel-brown font-semibold mb-4">Gunakan editor di bawah untuk memperbarui kelompok keahlian utama.</p>
+          <div id="skills-admin-list" class="space-y-4">
+            <!-- Dynamically Rendered -->
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: SECURITY SETTINGS -->
+      <div id="tab-security" class="admin-tab-content hidden space-y-6">
+        <div class="pb-4 border-b border-pastel-border">
+          <h2 class="text-2xl font-black text-pastel-brownDark">Keamanan & Credentials Admin 🔒</h2>
+          <p class="text-xs text-pastel-brown font-medium">Ubah username & password login backend kamu kapan saja.</p>
+        </div>
+
+        <form id="admin-security-form" class="bg-white p-6 rounded-3xl border border-pastel-border shadow-sm max-w-lg space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-pastel-brown mb-1">Username Baru</label>
+            <input type="text" id="sec-username" required placeholder="admin" class="w-full px-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-xs font-bold">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-pastel-brown mb-1">Password Baru</label>
+            <input type="password" id="sec-password" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-xs font-bold">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-pastel-brown mb-1">Konfirmasi Password Baru</label>
+            <input type="password" id="sec-password-confirm" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-2xl bg-pastel-bg border border-pastel-border text-xs font-bold">
+          </div>
+
+          <button type="submit" class="w-full py-3 rounded-2xl bg-amber-400 hover:bg-amber-500 text-amber-950 font-extrabold text-xs shadow-md border border-amber-300">
+            Perbarui Password Admin 🔑
+          </button>
+        </form>
+      </div>
+
+    </section>
+  </div>
+
+  <!-- Pure Vanilla JavaScript dengan Local Storage (Offline Mode) -->
+  <script>
+    let isAdminLoggedIn = false;
+
+    // Default Initial Data Store
+    const initialProjects = [
+      {
+        id: "proj_1",
+        title: "Bloom Craft - Habit Tracker Lucu 🌸",
+        category: "webapp",
+        categoryLabel: "Web Application",
+        image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80",
+        desc: "Bloom Craft adalah aplikasi pelacak kebiasaan harian buatan Floren yang dirancang dengan animasi bunga berkembang. Setiap kebiasaan yang diselesaikan memberikan poin untuk merawat kebun digital kamu.",
+        features: ["Visualisasi Bunga Tumbuh Real-time", "Pengingat Harian & Streak Tracker", "Tema Pastel Biru, Kuning & Merah Muda", "Dashboard Statistik Mingguan Ringkas"],
+        tech: ["React.js", "Tailwind CSS", "Framer Motion", "LocalStorage"],
+        stars: 156,
+        link: "https://example.com/bloom-craft"
+      },
+      {
+        id: "proj_2",
+        title: "Mochi UI - Figma Component Kit 🍡",
+        category: "uiux",
+        categoryLabel: "UI/UX Design Kit",
+        image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=800&q=80",
+        desc: "Mochi UI Kit adalah koleksi komponen desain Figma siap pakai yang dikreasikan oleh Floren. Dilengkapi token warna pastel hangat, tombol rounded lucu, serta layout responsif.",
+        features: ["250+ Komponent Auto-Layout Figma", "Palet Warna Pastel Biru, Yellow & Oat Milk", "Variabel Typography & Spacing Rapi", "Template Wireframe Mobile & Web"],
+        tech: ["Figma", "Auto Layout 5.0", "Design Tokens", "UI System"],
+        stars: 280,
+        link: "https://figma.com/@floren-mochi-ui"
+      },
+      {
+        id: "proj_3",
+        title: "Paws & Claws - Pet Planner 🐾",
+        category: "mobile",
+        categoryLabel: "Mobile Application",
+        image: "https://images.unsplash.com/photo-1548767797-d8c844163c4c?auto=format&fit=crop&w=800&q=80",
+        desc: "Aplikasi mobile imut penolong para pemilik anabul untuk mencatat jadwal grooming, vaksinasi, nutrisi harian, serta album kenangan foto hewan peliharaan.",
+        features: ["Notifikasi Jadwal Grooming & Vaksin", "Jurnal Kesehatan Anabul", "Album Foto Digital Peliharaan", "Rekomendasi Menu Nutrisi"],
+        tech: ["Flutter", "Dart", "Firebase", "Local Notifications"],
+        stars: 189,
+        link: "https://example.com/paws-claws"
+      },
+      {
+        id: "proj_4",
+        title: "Pastel Notes - Smart Journal 📝",
+        category: "webapp",
+        categoryLabel: "Web Application",
+        image: "https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=800&q=80",
+        desc: "Aplikasi jurnal web estetik dengan fitur Mood Tracker harian, pilihan stiker imut, dan tampilan clean ala Figma board untuk mencatat ide kapan saja.",
+        features: ["Mood Tracker Harian Warna Pastel", "Pilihan Stiker Digital Estetik", "Kategori Catatan Rapi & Pinning", "Mode Tampilan Terang Warm Beige"],
+        tech: ["Vue.js 3", "Pinia", "Tailwind CSS", "IndexedDB"],
+        stars: 112,
+        link: "https://example.com/pastel-notes"
+      },
+      {
+        id: "proj_5",
+        title: "Sweet AI - Creative Writing Assistant 🤖",
+        category: "creative",
+        categoryLabel: "Creative Tool",
+        image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
+        desc: "Perkakas bantu berbasis AI buatan Floren untuk menghasilkan ide tulisan kreatif, caption medsos ramah, dan draf cerita pendek dengan cepat.",
+        features: ["Generator Caption Medsos Estetik", "Curat Ide Cerita & Ide Judul", "Pengatur Nada Bahasa (Friendly/Formal)", "Ekspor Hasil ke PDF & Text"],
+        tech: ["Python", "FastAPI", "OpenAI API", "Tailwind CSS"],
+        stars: 204,
+        link: "https://example.com/sweet-ai"
+      },
+      {
+        id: "proj_6",
+        title: "Choco Planner - Financial Tracker 🍫",
+        category: "mobile",
+        categoryLabel: "Mobile Application",
+        image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80",
+        desc: "Aplikasi keuangan hangat berdesain coklat muda & pastel untuk mencatat pengeluaran harian, mengatur anggaran bulanan, dan melacak tabungan impian.",
+        features: ["Pencatatan Pengeluaran 3-Klik Instan", "Grafik Alokasi Budget Pastel", "Target Tabungan Impian Visual", "Laporan Bulanan Rapi"],
+        tech: ["React Native", "TypeScript", "Chart.js", "Redux"],
+        stars: 145,
+        link: "https://example.com/choco-planner"
+      }
+    ];
+
+    const initialSettings = {
+      brandTitle: "Floren Studio ✨",
+      brandAvatar: "🌸",
+      badgeText: "Tersedia untuk Project Kreatif & Collaboration",
+      headline: "Menciptakan Karya Digital Lucu, Estetik & Rapi.",
+      tagline: "Halo! Aku Floren 🎀 — seorang Project Creator & UI Designer. Aku merancang aplikasi web, prototype interaktif, dan produk digital dengan estetika pastel yang hangat & mudah digunakan.",
+      email: "floren.creator@example.com",
+      location: "Indonesia 🌸",
+      socials: [
+        { icon: "fa-brands fa-github", url: "https://github.com", class: "bg-pastel-blue hover:bg-sky-400 hover:text-white text-pastel-blueText" },
+        { icon: "fa-brands fa-linkedin-in", url: "https://linkedin.com", class: "bg-pastel-blue hover:bg-sky-400 hover:text-white text-pastel-blueText" },
+        { icon: "fa-brands fa-figma", url: "https://figma.com", class: "bg-pastel-pink hover:bg-rose-400 hover:text-white text-rose-600" },
+        { icon: "fa-brands fa-dribbble", url: "https://dribbble.com", class: "bg-pastel-yellow hover:bg-amber-400 hover:text-white text-pastel-yellowText" }
+      ]
+    };
+
+    const initialSkills = [
+      {
+        title: "UI/UX & Design",
+        icon: "fa-solid fa-palette",
+        colorClass: "bg-pastel-pink text-rose-600 border-rose-200",
+        items: [
+          { name: "Figma Components", level: "Ahli" },
+          { name: "Wireframing & Prototype", level: "Mahir" },
+          { name: "Design Tokens & Palette", level: "Mahir" },
+          { name: "User Centric Research", level: "Menengah" }
+        ]
+      },
+      {
+        title: "Frontend Dev",
+        icon: "fa-solid fa-code",
+        colorClass: "bg-pastel-blue text-sky-600 border-sky-200",
+        items: [
+          { name: "React.js / Next.js", level: "Mahir" },
+          { name: "Tailwind CSS", level: "Ahli" },
+          { name: "TypeScript", level: "Mahir" },
+          { name: "Vue.js 3", level: "Menengah" }
+        ]
+      },
+      {
+        title: "Mobile & App",
+        icon: "fa-solid fa-mobile-screen-button",
+        colorClass: "bg-pastel-yellow text-amber-700 border-amber-200",
+        items: [
+          { name: "Flutter / Dart", level: "Mahir" },
+          { name: "React Native", level: "Mahir" },
+          { name: "REST API Integration", level: "Mahir" }
+        ]
+      },
+      {
+        title: "Tools Kreatif",
+        icon: "fa-solid fa-shapes",
+        colorClass: "bg-pastel-green text-emerald-700 border-emerald-200",
+        items: [
+          { name: "Git & GitHub Workflow", level: "Mahir" },
+          { name: "Vercel / Netlify", level: "Mahir" },
+          { name: "Procreate / Illustration", level: "Mahir" },
+          { name: "Notion & Crafting", level: "Ahli" }
+        ]
+      }
+    ];
+
+    // Read Local Storage State
+    let stateProjects = JSON.parse(localStorage.getItem('floren_projects')) || [...initialProjects];
+    let stateSettings = JSON.parse(localStorage.getItem('floren_settings')) || { ...initialSettings };
+    let stateSkills = JSON.parse(localStorage.getItem('floren_skills')) || [...initialSkills];
+    let adminCredentials = JSON.parse(localStorage.getItem('floren_admin_credentials')) || { username: "admin", password: "admin123" };
+
+    // Save helpers
+    function saveProjectsData() {
+      localStorage.setItem('floren_projects', JSON.stringify(stateProjects));
+    }
+    function saveSettingsData() {
+      localStorage.setItem('floren_settings', JSON.stringify(stateSettings));
+    }
+    function saveAdminData() {
+      localStorage.setItem('floren_admin_credentials', JSON.stringify(adminCredentials));
+    }
+
+    window.addEventListener('load', () => {
+      renderAllFrontend();
+      setupEventListeners();
+    });
+
+    function renderAllFrontend() {
+      renderProjects();
+      renderSettings();
+      renderSkills();
+    }
+
+    function renderProjects() {
+      const grid = document.getElementById('projects-grid');
+      if (!grid) return;
+
+      const activeFilter = document.querySelector('.filter-btn.active')?.dataset?.filter || 'all';
+      const searchQuery = (document.getElementById('project-search')?.value || '').toLowerCase().trim();
+
+      const filtered = stateProjects.filter(p => {
+        const matchesCategory = (activeFilter === 'all' || p.category === activeFilter);
+        const matchesSearch = p.title.toLowerCase().includes(searchQuery) ||
+                             p.desc.toLowerCase().includes(searchQuery) ||
+                             (p.tech && p.tech.some(t => t.toLowerCase().includes(searchQuery)));
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        document.getElementById('empty-state')?.classList.remove('hidden');
+        return;
+      }
+
+      document.getElementById('empty-state')?.classList.add('hidden');
+      grid.innerHTML = filtered.map((p, index) => `
+        <div class="project-card group bg-white rounded-3xl border border-pastel-border overflow-hidden shadow-pastel hover:shadow-pastel-hover transition-all duration-300 flex flex-col" data-category="${p.category}">
+          <div class="relative overflow-hidden aspect-video bg-pastel-blue">
+            <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
+          </div>
+          <div class="p-6 flex flex-col flex-grow">
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="text-xs font-extrabold text-sky-700 bg-pastel-blue px-3 py-1 rounded-full border border-sky-200">${p.categoryLabel || p.category}</span>
+              <span class="text-xs text-amber-700 font-bold bg-pastel-yellow/70 px-2.5 py-0.5 rounded-full"><i class="fa-solid fa-star text-amber-500 mr-1"></i> ${p.stars || 100}</span>
+            </div>
+            <h3 class="text-xl font-extrabold text-pastel-brownDark group-hover:text-sky-600 transition-colors">
+              ${p.title}
+            </h3>
+            <p class="text-pastel-brown text-sm mt-2 line-clamp-2 leading-relaxed">
+              ${p.desc}
+            </p>
+            <div class="flex flex-wrap gap-1.5 mt-4 mb-6">
+              ${(p.tech || []).map(t => `<span class="text-[11px] font-bold px-2.5 py-1 rounded-xl bg-pastel-blue text-sky-800 border border-sky-200">${t}</span>`).join('')}
+            </div>
+            <div class="mt-auto pt-4 border-t border-pastel-border/60 flex items-center justify-between">
+              <button onclick="openProjectModalById('${p.id}')" class="text-xs font-bold text-sky-600 hover:text-sky-800 flex items-center gap-1">
+                <span>Detail Case Study</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </button>
+              <div class="flex items-center gap-2">
+                <a href="${p.link || '#'}" target="_blank" rel="noopener" class="px-3 py-1.5 rounded-xl bg-sky-400 hover:bg-sky-500 text-white text-xs font-bold flex items-center gap-1 shadow-sm">
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Live Demo
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderSettings() {
+      document.getElementById('brand-title').innerText = stateSettings.brandTitle;
+      document.getElementById('brand-avatar').innerText = stateSettings.brandAvatar;
+      document.getElementById('hero-badge-text').innerText = stateSettings.badgeText;
+      document.getElementById('hero-headline').innerHTML = stateSettings.headline;
+      document.getElementById('hero-tagline').innerHTML = stateSettings.tagline;
+      document.getElementById('display-email').innerText = stateSettings.email;
+      document.getElementById('display-location').innerText = stateSettings.location;
+      
+      const socialsContainer = document.getElementById('hero-socials');
+      if (socialsContainer && stateSettings.socials) {
+        socialsContainer.innerHTML = stateSettings.socials.map(s => `
+          <a href="${s.url}" target="_blank" rel="noopener" class="w-11 h-11 rounded-2xl ${s.class} flex items-center justify-center transition-all duration-200 border shadow-sm">
+            <i class="${s.icon} text-lg"></i>
+          </a>
+        `).join('');
+      }
+
+      // Populate Admin Settings inputs & Rich Text Editors
+      if (document.getElementById('set-brand-title')) {
+        document.getElementById('set-brand-title').value = stateSettings.brandTitle || '';
+        document.getElementById('set-brand-avatar').value = stateSettings.brandAvatar || '';
+        document.getElementById('set-badge-text').value = stateSettings.badgeText || '';
+        document.getElementById('set-email').value = stateSettings.email || '';
+        document.getElementById('set-location').value = stateSettings.location || '';
+        
+        // Rich Text Editors sync
+        const headlineEd = document.getElementById('editor-headline');
+        const taglineEd = document.getElementById('editor-tagline');
+        if (headlineEd) headlineEd.innerHTML = stateSettings.headline || '';
+        if (taglineEd) taglineEd.innerHTML = stateSettings.tagline || '';
+        
+        updateLivePreview();
+      }
+    }
+
+    function updateLivePreview() {
+      const hContent = document.getElementById('editor-headline')?.innerHTML || '';
+      const tContent = document.getElementById('editor-tagline')?.innerHTML || '';
+      
+      const prevH = document.getElementById('preview-headline');
+      const prevT = document.getElementById('preview-tagline');
+      if (prevH) prevH.innerHTML = hContent;
+      if (prevT) prevT.innerHTML = tContent;
+      
+      const hiddenH = document.getElementById('set-headline');
+      const hiddenT = document.getElementById('set-tagline');
+      if (hiddenH) hiddenH.value = hContent;
+      if (hiddenT) hiddenT.value = tContent;
+    }
+
+    // Rich Text Formatting Helper Functions
+    window.applyRichFormat = (target, type) => {
+      const editor = document.getElementById(`editor-${target}`);
+      if (!editor) return;
+
+      const sel = window.getSelection();
+      const selectedText = sel ? sel.toString() : '';
+
+      if (type === 'gradient') {
+        if (selectedText) {
+          document.execCommand('insertHTML', false, `<span class="bg-gradient-to-r from-sky-500 via-amber-500 to-amber-700 bg-clip-text text-transparent">${selectedText}</span>`);
+        } else {
+          editor.innerHTML += ' <span class="bg-gradient-to-r from-sky-500 via-amber-500 to-amber-700 bg-clip-text text-transparent">Teks Gradient</span>';
+        }
+      } else if (type === 'badge') {
+        if (selectedText) {
+          document.execCommand('insertHTML', false, `<span class="font-extrabold text-pastel-brownDark bg-pastel-yellow/60 px-2 py-0.5 rounded-lg border border-pastel-yellowAccent/40">${selectedText}</span>`);
+        } else {
+          editor.innerHTML += ' <span class="font-extrabold text-pastel-brownDark bg-pastel-yellow/60 px-2 py-0.5 rounded-lg border border-pastel-yellowAccent/40">Sorotan Badge</span>';
+        }
+      } else if (type === 'bold') {
+        document.execCommand('bold', false, null);
+      } else if (type === 'italic') {
+        document.execCommand('italic', false, null);
+      } else if (type === 'clear') {
+        const plainText = editor.innerText;
+        editor.innerHTML = plainText;
+      }
+      
+      updateLivePreview();
+    };
+
+    window.insertEmoji = (target, emoji) => {
+      const editor = document.getElementById(`editor-${target}`);
+      if (!editor) return;
+      editor.focus();
+      document.execCommand('insertText', false, ` ${emoji} `);
+      updateLivePreview();
+    };
+
+    function renderSkills() {
+      const grid = document.getElementById('skills-grid');
+      if (!grid) return;
+      grid.innerHTML = stateSkills.map(s => `
+        <div class="bg-white p-6 rounded-3xl border border-pastel-border shadow-pastel hover:border-sky-300 transition-all">
+          <div class="w-12 h-12 rounded-2xl ${s.colorClass} flex items-center justify-center text-xl mb-4 font-bold border">
+            <i class="${s.icon}"></i>
+          </div>
+          <h3 class="text-lg font-extrabold text-pastel-brownDark mb-3">${s.title}</h3>
+          <ul class="space-y-2.5 text-sm text-pastel-brown font-medium">
+            ${s.items.map(item => `
+              <li class="flex items-center justify-between">
+                <span>${item.name}</span>
+                <span class="text-xs font-bold text-sky-600 bg-pastel-blue px-2 py-0.5 rounded-lg">${item.level}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      `).join('');
+    }
+
+    function renderAdminProjectsTable() {
+      const tbody = document.getElementById('admin-projects-table');
+      if (!tbody) return;
+
+      tbody.innerHTML = stateProjects.map(p => `
+        <tr>
+          <td class="p-4 flex items-center gap-3">
+            <img src="${p.image}" class="w-10 h-10 rounded-xl object-cover border border-pastel-border">
+            <div>
+              <span class="font-extrabold text-pastel-brownDark block">${p.title}</span>
+              <span class="text-[10px] font-normal text-pastel-brown">${p.tech ? p.tech.join(', ') : ''}</span>
+            </div>
+          </td>
+          <td class="p-4">
+            <span class="bg-pastel-blue px-2.5 py-1 rounded-xl text-sky-800 border border-sky-200">${p.category}</span>
+          </td>
+          <td class="p-4">⭐ ${p.stars || 0}</td>
+          <td class="p-4 text-right space-x-2">
+            <button onclick="editProject('${p.id}')" class="px-3 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-[11px] border border-amber-300">Edit</button>
+            <button onclick="deleteProject('${p.id}')" class="px-3 py-1.5 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-800 font-bold text-[11px] border border-rose-300">Hapus</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderAdminSkills() {
+      const list = document.getElementById('skills-admin-list');
+      if (!list) return;
+      list.innerHTML = stateSkills.map((s, idx) => `
+        <div class="p-4 rounded-2xl bg-pastel-bg border border-pastel-border space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-pastel-brownDark text-sm">${s.title}</span>
+            <span class="text-xs text-pastel-brown">${s.items.length} items</span>
+          </div>
+          <div class="flex flex-wrap gap-2 text-xs">
+            ${s.items.map(i => `<span class="bg-white px-2.5 py-1 rounded-xl border font-semibold">${i.name} (${i.level})</span>`).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateDashboardStats() {
+      document.getElementById('stat-total-projects').innerText = stateProjects.length;
+      document.getElementById('stat-total-skills').innerText = stateSkills.length;
+      document.getElementById('metric-projects-count').innerText = `${stateProjects.length}+`;
+    }
+
+    function setupEventListeners() {
+      // Live Preview updates on contenteditable input
+      document.getElementById('editor-headline')?.addEventListener('input', updateLivePreview);
+      document.getElementById('editor-tagline')?.addEventListener('input', updateLivePreview);
+
+      // Admin Login Handler
+      document.getElementById('admin-login-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const u = document.getElementById('login-username').value.trim();
+        const p = document.getElementById('login-password').value.trim();
+
+        if (u === adminCredentials.username && p === adminCredentials.password) {
+          isAdminLoggedIn = true;
+          closeLoginModal();
+          openAdminPanel();
+          showToast("Berhasil masuk Admin Backend Portal 🔓✨");
+        } else {
+          document.getElementById('login-error-msg').classList.remove('hidden');
+        }
+      });
+
+      // Admin Hero Settings Save Form Handler
+      document.getElementById('hero-settings-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        updateLivePreview();
+
+        const btnSave = document.getElementById('btn-save-hero');
+        const btnText = document.getElementById('btn-save-hero-text');
+        
+        if (btnSave && btnText) {
+          btnSave.disabled = true;
+          btnText.innerText = 'Menyimpan... ⏳';
+        }
+
+        stateSettings = {
+          ...stateSettings,
+          brandTitle: document.getElementById('set-brand-title').value.trim(),
+          brandAvatar: document.getElementById('set-brand-avatar').value.trim(),
+          badgeText: document.getElementById('set-badge-text').value.trim(),
+          headline: document.getElementById('set-headline').value || document.getElementById('editor-headline').innerHTML,
+          tagline: document.getElementById('set-tagline').value || document.getElementById('editor-tagline').innerHTML,
+          email: document.getElementById('set-email').value.trim(),
+          location: document.getElementById('set-location').value.trim()
+        };
+
+        saveSettingsData();
+        renderSettings();
+        
+        setTimeout(() => {
+          if (btnSave && btnText) {
+            btnSave.disabled = false;
+            btnText.innerText = 'Simpan Perubahan Hero & Profile ✨';
+          }
+          showToast("Hero & Profile tersimpan secara lokal! ✨");
+        }, 500);
+      });
+
+      // Project Form Submit (Create / Edit)
+      document.getElementById('project-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = document.getElementById('edit-project-id').value || `proj_${Date.now()}`;
+        const newProj = {
+          id,
+          title: document.getElementById('p-title').value,
+          category: document.getElementById('p-category').value,
+          categoryLabel: document.getElementById('p-category-label').value,
+          image: document.getElementById('p-image').value,
+          desc: document.getElementById('p-desc').value,
+          features: document.getElementById('p-features').value.split(',').map(s => s.trim()).filter(Boolean),
+          tech: document.getElementById('p-tech').value.split(',').map(s => s.trim()).filter(Boolean),
+          stars: parseInt(document.getElementById('p-stars').value) || 0,
+          link: document.getElementById('p-link').value
+        };
+
+        const idx = stateProjects.findIndex(p => p.id === id);
+        if (idx !== -1) stateProjects[idx] = newProj;
+        else stateProjects.push(newProj);
+        
+        saveProjectsData();
+        renderProjects();
+        renderAdminProjectsTable();
+        updateDashboardStats();
+
+        closeProjectEditor();
+        showToast("Project Berhasil Disimpan Lokal! 🎨");
+      });
+
+      // Change Password Form Submit
+      document.getElementById('admin-security-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const u = document.getElementById('sec-username').value.trim();
+        const p1 = document.getElementById('sec-password').value.trim();
+        const p2 = document.getElementById('sec-password-confirm').value.trim();
+
+        if (p1 !== p2) {
+          showToast("Password konfirmasi tidak cocok!");
+          return;
+        }
+
+        adminCredentials = { username: u, password: p1 };
+        saveAdminData();
+        showToast("Credential Admin Berhasil Diperbarui! 🔑");
+      });
+
+      // Filter Buttons & Search
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => {
+            b.classList.remove('active', 'bg-sky-400', 'text-white', 'shadow-md');
+            b.classList.add('bg-pastel-bg', 'text-pastel-brown');
+          });
+          btn.classList.add('active', 'bg-sky-400', 'text-white', 'shadow-md');
+          btn.classList.remove('bg-pastel-bg', 'text-pastel-brown');
+          renderProjects();
+        });
+      });
+
+      document.getElementById('project-search')?.addEventListener('input', renderProjects);
+
+      // Sidebar Admin Tabs Navigation
+      document.querySelectorAll('.admin-nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          switchAdminTab(btn.dataset.adminTab);
+        });
+      });
+    }
+
+    // Global Modal & Helper Functions exposed to window
+    window.openLoginModal = () => {
+      document.getElementById('login-modal').classList.remove('hidden');
+      document.getElementById('login-modal').classList.add('flex');
+    };
+
+    window.closeLoginModal = () => {
+      document.getElementById('login-modal').classList.add('hidden');
+      document.getElementById('login-modal').classList.remove('flex');
+      document.getElementById('login-error-msg')?.classList.add('hidden');
+    };
+
+    window.openAdminPanel = () => {
+      if (!isAdminLoggedIn) {
+        openLoginModal();
+        return;
+      }
+      document.getElementById('admin-panel').classList.remove('hidden');
+      document.getElementById('admin-panel').classList.add('flex');
+      switchAdminTab('dashboard');
+      renderAdminProjectsTable();
+      renderAdminSkills();
+      updateDashboardStats();
+    };
+
+    window.closeAdminPanel = () => {
+      document.getElementById('admin-panel').classList.add('hidden');
+      document.getElementById('admin-panel').classList.remove('flex');
+    };
+
+    window.logoutAdmin = () => {
+      isAdminLoggedIn = false;
+      closeAdminPanel();
+      showToast("Anda telah keluar dari Admin Backend 👋");
+    };
+
+    window.switchAdminTab = (tabName) => {
+      document.querySelectorAll('.admin-nav-btn').forEach(b => {
+        if (b.dataset.adminTab === tabName) {
+          b.classList.add('bg-sky-400', 'text-white');
+          b.classList.remove('text-pastel-brown', 'hover:bg-pastel-blue');
+        } else {
+          b.classList.remove('bg-sky-400', 'text-white');
+          b.classList.add('text-pastel-brown', 'hover:bg-pastel-blue');
+        }
+      });
+
+      document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.add('hidden'));
+      document.getElementById(`tab-${tabName}`)?.classList.remove('hidden');
+    };
+
+    window.openProjectEditor = () => {
+      document.getElementById('project-form').reset();
+      document.getElementById('edit-project-id').value = '';
+      document.getElementById('editor-project-title').innerText = 'Tambah Project Baru ✨';
+      document.getElementById('admin-project-editor').classList.remove('hidden');
+    };
+
+    window.closeProjectEditor = () => {
+      document.getElementById('admin-project-editor').classList.add('hidden');
+    };
+
+    window.editProject = (id) => {
+      const p = stateProjects.find(item => item.id === id);
+      if (!p) return;
+      document.getElementById('edit-project-id').value = p.id;
+      document.getElementById('p-title').value = p.title || '';
+      document.getElementById('p-category').value = p.category || 'webapp';
+      document.getElementById('p-category-label').value = p.categoryLabel || '';
+      document.getElementById('p-image').value = p.image || '';
+      document.getElementById('p-desc').value = p.desc || '';
+      document.getElementById('p-features').value = (p.features || []).join(', ');
+      document.getElementById('p-tech').value = (p.tech || []).join(', ');
+      document.getElementById('p-stars').value = p.stars || 100;
+      document.getElementById('p-link').value = p.link || '';
+
+      document.getElementById('editor-project-title').innerText = `Edit Project: ${p.title}`;
+      document.getElementById('admin-project-editor').classList.remove('hidden');
+    };
+
+    window.deleteProject = (id) => {
+      if (!confirm("Apakah Anda yakin ingin menghapus project ini?")) return;
+      stateProjects = stateProjects.filter(p => p.id !== id);
+      saveProjectsData();
+      renderProjects();
+      renderAdminProjectsTable();
+      updateDashboardStats();
+      showToast("Project berhasil dihapus ✨");
+    };
+
+    window.openProjectModalById = (id) => {
+      const p = stateProjects.find(item => item.id === id);
+      if (!p) return;
+
+      document.getElementById('modal-img').src = p.image;
+      document.getElementById('modal-category').innerText = p.categoryLabel || p.category;
+      document.getElementById('modal-title').innerText = p.title;
+      document.getElementById('modal-desc').innerText = p.desc;
+      document.getElementById('modal-live-link').href = p.link || '#';
+
+      document.getElementById('modal-features').innerHTML = (p.features || []).map(f => `<li class="flex items-start gap-2"><span>✓ ${f}</span></li>`).join('');
+      document.getElementById('modal-tech').innerHTML = (p.tech || []).map(t => `<span class="px-3 py-1 text-xs font-bold rounded-xl bg-pastel-blue text-sky-800 border border-sky-200">${t}</span>`).join('');
+
+      const modal = document.getElementById('project-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    };
+
+    window.closeProjectModal = () => {
+      const modal = document.getElementById('project-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    };
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-message');
+      toastMsg.innerText = message;
+
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+    window.showToast = showToast;
+
+    window.copyContactEmail = () => {
+      const email = stateSettings.email || "floren.creator@example.com";
+      const dummyInput = document.createElement("input");
+      document.body.appendChild(dummyInput);
+      dummyInput.value = email;
+      dummyInput.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummyInput);
+      showToast(`Email (${email}) berhasil disalin! 🎀`);
+    };
+  </script>
+</body>
+</html>

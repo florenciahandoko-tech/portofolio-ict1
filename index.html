@@ -555,7 +555,7 @@
         <!-- Quick Action Grid -->
         <div class="bg-white p-6 rounded-3xl border border-pastel-border shadow-sm space-y-4">
           <h3 class="text-sm font-extrabold text-pastel-brownDark uppercase tracking-wider">Aksi Cepat Backend</h3>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <button onclick="switchAdminTab('projects'); openProjectEditor()" class="p-4 rounded-2xl bg-pastel-blue hover:bg-sky-200 text-sky-800 font-bold text-xs flex items-center gap-3 border border-sky-300 transition-all text-left">
               <i class="fa-solid fa-circle-plus text-lg"></i>
               <div>
@@ -575,6 +575,13 @@
               <div>
                 <span class="block">Ganti Credential Admin</span>
                 <span class="text-[10px] font-normal opacity-80">Perbarui username & password</span>
+              </div>
+            </button>
+            <button onclick="uploadAllToFirestore()" class="p-4 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center gap-3 border border-emerald-300 transition-all text-left">
+              <i class="fa-solid fa-cloud-arrow-up text-lg text-emerald-600"></i>
+              <div>
+                <span class="block">Upload ke Firestore</span>
+                <span class="text-[10px] font-normal opacity-80">Sinkronkan data awal</span>
               </div>
             </button>
           </div>
@@ -841,8 +848,35 @@
     </section>
   </div>
 
-  <!-- Pure Vanilla JavaScript dengan Local Storage (Offline Mode) -->
-  <script>
+  <!-- Firebase SDK & Application Logic -->
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+      getFirestore, 
+      collection, 
+      doc, 
+      getDocs, 
+      getDoc, 
+      setDoc, 
+      deleteDoc, 
+      onSnapshot 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCGQBkN02HEi9yTv30l7ZSSt66C7H4Ca-U",
+      authDomain: "portofoliofloren-8baff.firebaseapp.com",
+      projectId: "portofoliofloren-8baff",
+      storageBucket: "portofoliofloren-8baff.firebasestorage.app",
+      messagingSenderId: "690590274636",
+      appId: "1:690590274636:web:d40524aadd3932e86ad0e9"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
     let isAdminLoggedIn = false;
 
     // Default Initial Data Store
@@ -855,7 +889,7 @@
         image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80",
         desc: "Bloom Craft adalah aplikasi pelacak kebiasaan harian buatan Floren yang dirancang dengan animasi bunga berkembang. Setiap kebiasaan yang diselesaikan memberikan poin untuk merawat kebun digital kamu.",
         features: ["Visualisasi Bunga Tumbuh Real-time", "Pengingat Harian & Streak Tracker", "Tema Pastel Biru, Kuning & Merah Muda", "Dashboard Statistik Mingguan Ringkas"],
-        tech: ["React.js", "Tailwind CSS", "Framer Motion", "LocalStorage"],
+        tech: ["React.js", "Tailwind CSS", "Framer Motion", "Firestore"],
         stars: 156,
         link: "https://example.com/bloom-craft"
       },
@@ -983,27 +1017,150 @@
       }
     ];
 
-    // Read Local Storage State
-    let stateProjects = JSON.parse(localStorage.getItem('floren_projects')) || [...initialProjects];
-    let stateSettings = JSON.parse(localStorage.getItem('floren_settings')) || { ...initialSettings };
-    let stateSkills = JSON.parse(localStorage.getItem('floren_skills')) || [...initialSkills];
-    let adminCredentials = JSON.parse(localStorage.getItem('floren_admin_credentials')) || { username: "admin", password: "admin123" };
+    // State Variables (Initialized with defaults, synchronized with Firestore)
+    let stateProjects = [...initialProjects];
+    let stateSettings = { ...initialSettings };
+    let stateSkills = [...initialSkills];
+    let adminCredentials = { username: "admin", password: "admin123" };
 
-    // Save helpers
-    function saveProjectsData() {
-      localStorage.setItem('floren_projects', JSON.stringify(stateProjects));
-    }
-    function saveSettingsData() {
-      localStorage.setItem('floren_settings', JSON.stringify(stateSettings));
-    }
-    function saveAdminData() {
-      localStorage.setItem('floren_admin_credentials', JSON.stringify(adminCredentials));
+    // Explicit Data Seeding to Firestore
+    async function seedAllDataToFirestore() {
+      console.log("Menyinkronkan data portofolio ke Firestore...");
+      // 1. Projects Collection
+      for (let i = 0; i < initialProjects.length; i++) {
+        const p = initialProjects[i];
+        await setDoc(doc(db, "projects", p.id), { ...p, order: i }, { merge: true });
+      }
+      // 2. Settings Profile
+      await setDoc(doc(db, "settings", "profile"), initialSettings, { merge: true });
+      // 3. Settings Skills
+      await setDoc(doc(db, "settings", "skills"), { list: initialSkills }, { merge: true });
+      // 4. Admin Credentials
+      await setDoc(doc(db, "settings", "admin"), adminCredentials, { merge: true });
+      console.log("Sinkronisasi data ke Firestore berhasil!");
     }
 
-    window.addEventListener('load', () => {
-      renderAllFrontend();
-      setupEventListeners();
-    });
+    // Auto-seed on startup if Firestore is empty
+    async function checkAndAutoSeed() {
+      try {
+        const snap = await getDocs(collection(db, "projects"));
+        if (snap.empty) {
+          console.log("Koleksi projects kosong di Firestore, melakukan auto-seed data default...");
+          await seedAllDataToFirestore();
+        }
+      } catch (err) {
+        console.warn("Catatan auto-seed Firestore:", err.message);
+        if (err.code === 'permission-denied') {
+          console.error("Firestore Security Rules memblokir akses. Harap ubah rules di Firebase Console ke Test Mode.");
+        }
+      }
+    }
+
+    // Manual Upload Action for Admin Dashboard
+    window.uploadAllToFirestore = async () => {
+      showToast("Sedang mengupload semua data ke Firestore... ⏳");
+      try {
+        await seedAllDataToFirestore();
+        showToast("Semua data berhasil diupload ke Firestore! ☁️✨");
+      } catch (err) {
+        console.error("Gagal upload ke Firestore:", err);
+        if (err.code === 'permission-denied') {
+          showToast("Akses Ditolak! Harap aktifkan Test Mode di Firestore Security Rules.");
+        } else {
+          showToast("Gagal upload: " + err.message);
+        }
+      }
+    };
+
+    // Firestore Real-time Listeners
+    function initFirestoreSync() {
+      // 1. Sync Settings (Hero & Profile)
+      onSnapshot(doc(db, "settings", "profile"), (docSnap) => {
+        if (docSnap.exists()) {
+          stateSettings = { ...initialSettings, ...docSnap.data() };
+        } else {
+          setDoc(doc(db, "settings", "profile"), initialSettings).catch(console.error);
+        }
+        renderSettings();
+      }, (err) => {
+        console.error("Firestore settings sync error:", err);
+        if (err.code === 'permission-denied') {
+          console.warn("Firestore Rules memblokir pembacaan settings.");
+        }
+      });
+
+      // 2. Sync Skills
+      onSnapshot(doc(db, "settings", "skills"), (docSnap) => {
+        if (docSnap.exists() && docSnap.data().list) {
+          stateSkills = docSnap.data().list;
+        } else {
+          setDoc(doc(db, "settings", "skills"), { list: initialSkills }).catch(console.error);
+        }
+        renderSkills();
+        renderAdminSkills();
+        updateDashboardStats();
+      }, (err) => {
+        console.error("Firestore skills sync error:", err);
+      });
+
+      // 3. Sync Admin Credentials
+      onSnapshot(doc(db, "settings", "admin"), (docSnap) => {
+        if (docSnap.exists()) {
+          adminCredentials = docSnap.data();
+        } else {
+          setDoc(doc(db, "settings", "admin"), { username: "admin", password: "admin123" }).catch(console.error);
+        }
+      }, (err) => {
+        console.error("Firestore admin sync error:", err);
+      });
+
+      // 4. Sync Projects Collection
+      onSnapshot(collection(db, "projects"), (snapshot) => {
+        if (!snapshot.empty) {
+          const projs = [];
+          snapshot.forEach(docSnap => {
+            projs.push({ id: docSnap.id, ...docSnap.data() });
+          });
+          projs.sort((a, b) => (a.order ?? 9999) - (b.order ?? 9999));
+          stateProjects = projs;
+        } else {
+          // Initialize default projects to Firestore if empty
+          initialProjects.forEach((p, idx) => {
+            setDoc(doc(db, "projects", p.id), { ...p, order: idx }).catch(console.error);
+          });
+          stateProjects = [...initialProjects];
+        }
+        renderProjects();
+        renderAdminProjectsTable();
+        updateDashboardStats();
+      }, (err) => {
+        console.error("Firestore projects sync error:", err);
+      });
+    }
+
+    // Firestore Save Helpers
+    async function saveProjectData(projectData) {
+      const docRef = doc(db, "projects", projectData.id);
+      await setDoc(docRef, projectData, { merge: true });
+    }
+
+    async function deleteProjectData(id) {
+      await deleteDoc(doc(db, "projects", id));
+    }
+
+    async function saveSettingsData(newSettings) {
+      await setDoc(doc(db, "settings", "profile"), newSettings, { merge: true });
+    }
+
+    async function saveAdminData(newCreds) {
+      await setDoc(doc(db, "settings", "admin"), newCreds, { merge: true });
+    }
+
+    // Initial setup
+    renderAllFrontend();
+    setupEventListeners();
+    initFirestoreSync();
+    checkAndAutoSeed();
 
     function renderAllFrontend() {
       renderProjects();
@@ -1020,8 +1177,8 @@
 
       const filtered = stateProjects.filter(p => {
         const matchesCategory = (activeFilter === 'all' || p.category === activeFilter);
-        const matchesSearch = p.title.toLowerCase().includes(searchQuery) ||
-                             p.desc.toLowerCase().includes(searchQuery) ||
+        const matchesSearch = (p.title || '').toLowerCase().includes(searchQuery) ||
+                             (p.desc || '').toLowerCase().includes(searchQuery) ||
                              (p.tech && p.tech.some(t => t.toLowerCase().includes(searchQuery)));
         return matchesCategory && matchesSearch;
       });
@@ -1068,13 +1225,13 @@
     }
 
     function renderSettings() {
-      document.getElementById('brand-title').innerText = stateSettings.brandTitle;
-      document.getElementById('brand-avatar').innerText = stateSettings.brandAvatar;
-      document.getElementById('hero-badge-text').innerText = stateSettings.badgeText;
-      document.getElementById('hero-headline').innerHTML = stateSettings.headline;
-      document.getElementById('hero-tagline').innerHTML = stateSettings.tagline;
-      document.getElementById('display-email').innerText = stateSettings.email;
-      document.getElementById('display-location').innerText = stateSettings.location;
+      document.getElementById('brand-title').innerText = stateSettings.brandTitle || '';
+      document.getElementById('brand-avatar').innerText = stateSettings.brandAvatar || '';
+      document.getElementById('hero-badge-text').innerText = stateSettings.badgeText || '';
+      document.getElementById('hero-headline').innerHTML = stateSettings.headline || '';
+      document.getElementById('hero-tagline').innerHTML = stateSettings.tagline || '';
+      document.getElementById('display-email').innerText = stateSettings.email || '';
+      document.getElementById('display-location').innerText = stateSettings.location || '';
       
       const socialsContainer = document.getElementById('hero-socials');
       if (socialsContainer && stateSettings.socials) {
@@ -1248,7 +1405,7 @@
       });
 
       // Admin Hero Settings Save Form Handler
-      document.getElementById('hero-settings-form').addEventListener('submit', (e) => {
+      document.getElementById('hero-settings-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         updateLivePreview();
 
@@ -1260,7 +1417,7 @@
           btnText.innerText = 'Menyimpan... ⏳';
         }
 
-        stateSettings = {
+        const updatedSettings = {
           ...stateSettings,
           brandTitle: document.getElementById('set-brand-title').value.trim(),
           brandAvatar: document.getElementById('set-brand-avatar').value.trim(),
@@ -1271,22 +1428,27 @@
           location: document.getElementById('set-location').value.trim()
         };
 
-        saveSettingsData();
-        renderSettings();
-        
-        setTimeout(() => {
+        try {
+          await saveSettingsData(updatedSettings);
+          stateSettings = updatedSettings;
+          renderSettings();
+          showToast("Hero & Profile tersimpan di Firestore! ✨");
+        } catch (err) {
+          console.error("Error saving settings:", err);
+          showToast("Gagal menyimpan ke Firestore: " + err.message);
+        } finally {
           if (btnSave && btnText) {
             btnSave.disabled = false;
             btnText.innerText = 'Simpan Perubahan Hero & Profile ✨';
           }
-          showToast("Hero & Profile tersimpan secara lokal! ✨");
-        }, 500);
+        }
       });
 
       // Project Form Submit (Create / Edit)
-      document.getElementById('project-form').addEventListener('submit', (e) => {
+      document.getElementById('project-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = document.getElementById('edit-project-id').value || `proj_${Date.now()}`;
+        const existingProj = stateProjects.find(p => p.id === id);
         const newProj = {
           id,
           title: document.getElementById('p-title').value,
@@ -1297,24 +1459,29 @@
           features: document.getElementById('p-features').value.split(',').map(s => s.trim()).filter(Boolean),
           tech: document.getElementById('p-tech').value.split(',').map(s => s.trim()).filter(Boolean),
           stars: parseInt(document.getElementById('p-stars').value) || 0,
-          link: document.getElementById('p-link').value
+          link: document.getElementById('p-link').value,
+          order: existingProj && existingProj.order !== undefined ? existingProj.order : stateProjects.length
         };
 
-        const idx = stateProjects.findIndex(p => p.id === id);
-        if (idx !== -1) stateProjects[idx] = newProj;
-        else stateProjects.push(newProj);
-        
-        saveProjectsData();
-        renderProjects();
-        renderAdminProjectsTable();
-        updateDashboardStats();
-
-        closeProjectEditor();
-        showToast("Project Berhasil Disimpan Lokal! 🎨");
+        try {
+          await saveProjectData(newProj);
+          const idx = stateProjects.findIndex(p => p.id === id);
+          if (idx !== -1) stateProjects[idx] = newProj;
+          else stateProjects.push(newProj);
+          
+          renderProjects();
+          renderAdminProjectsTable();
+          updateDashboardStats();
+          closeProjectEditor();
+          showToast("Project Berhasil Disimpan di Firestore! 🎨");
+        } catch (err) {
+          console.error("Error saving project:", err);
+          showToast("Gagal menyimpan project: " + err.message);
+        }
       });
 
       // Change Password Form Submit
-      document.getElementById('admin-security-form').addEventListener('submit', (e) => {
+      document.getElementById('admin-security-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const u = document.getElementById('sec-username').value.trim();
         const p1 = document.getElementById('sec-password').value.trim();
@@ -1325,9 +1492,14 @@
           return;
         }
 
-        adminCredentials = { username: u, password: p1 };
-        saveAdminData();
-        showToast("Credential Admin Berhasil Diperbarui! 🔑");
+        try {
+          await saveAdminData({ username: u, password: p1 });
+          adminCredentials = { username: u, password: p1 };
+          showToast("Credential Admin Berhasil Diperbarui di Firestore! 🔑");
+        } catch (err) {
+          console.error("Error saving admin credentials:", err);
+          showToast("Gagal memperbarui credentials: " + err.message);
+        }
       });
 
       // Filter Buttons & Search
@@ -1433,14 +1605,19 @@
       document.getElementById('admin-project-editor').classList.remove('hidden');
     };
 
-    window.deleteProject = (id) => {
+    window.deleteProject = async (id) => {
       if (!confirm("Apakah Anda yakin ingin menghapus project ini?")) return;
-      stateProjects = stateProjects.filter(p => p.id !== id);
-      saveProjectsData();
-      renderProjects();
-      renderAdminProjectsTable();
-      updateDashboardStats();
-      showToast("Project berhasil dihapus ✨");
+      try {
+        await deleteProjectData(id);
+        stateProjects = stateProjects.filter(p => p.id !== id);
+        renderProjects();
+        renderAdminProjectsTable();
+        updateDashboardStats();
+        showToast("Project berhasil dihapus dari Firestore ✨");
+      } catch (err) {
+        console.error("Error deleting project:", err);
+        showToast("Gagal menghapus project: " + err.message);
+      }
     };
 
     window.openProjectModalById = (id) => {
